@@ -1,0 +1,31 @@
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+:root{--bg:#0b0c10;--card:#151820;--muted:#9aa4b2;--text:#e6edf3;--accent:#5eead4;--accent-2:#fde68a;--red:#ef4444;--green:#10b981}
+body{background:linear-gradient(180deg,#0b0c10,#0e1117);color:var(--text);font:16px/1.5 ui-sans-serif,system-ui,"Segoe UI",Roboto,Arial}
+.container{max-width:1200px;margin:0 auto;padding:16px}
+header{display:flex;align-items:flex-end;gap:12px;justify-content:space-between}
+h1{font-size:28px;margin:0 0 4px 0}h1 .tag{font-size:14px;background:#1f2937;padding:2px 8px;border-radius:999px;margin-left:8px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+button,input,select{background:#0f172a;color:var(--text);border:1px solid #23304a;border-radius:10px;padding:8px 10px}
+button{cursor:pointer}
+button:hover{border-color:#334155;transform:translateY(-1px)}
+.grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:980px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1px solid #1e293b;border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.card h2{margin-top:0;font-size:18px}
+.fields{display:grid;gap:12px}.two-col{grid-template-columns:1fr 1fr}
+.hint{color:var(--muted);font-size:12px;margin-top:6px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kpi{background:#0f1320;border:1px solid #1f2a44;border-radius:14px;padding:12px}
+.kpi-accent{border-color:#0a3b34;background:rgba(94,234,212,.06)}
+.kpi .kpi-label{color:var(--muted);font-size:12px}
+.kpi .kpi-value{font-size:22px;font-weight:700;margin-top:6px}
+.attainment{display:flex;gap:24px;margin-top:10px}
+.table-wrap{overflow:auto;border:1px solid #23304a;border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:10px;border-bottom:1px solid #1e293b;text-align:left}
+thead th{position:sticky;top:0;background:#0f1320;z-index:1}
+tbody tr:hover{background:#0c1223}
+.row-actions{margin-top:10px;display:flex;gap:8px}
+.foot{opacity:.8;text-align:center;margin-bottom:24px}
+.badge{padding:2px 8px;border-radius:999px;border:1px solid #334155;font-size:12px}
+.badge.red{border-color:var(--red);color:var(--red)}.badge.green{border-color:var(--green);color:var(--green)}

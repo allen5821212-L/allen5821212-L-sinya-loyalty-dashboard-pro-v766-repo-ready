@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sinya Loyalty Dashboard v7 — Optimized</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="container">
+    <h1>Sinya Loyalty Dashboard v7 <span class="tag">Optimized</span></h1>
+    <div class="actions">
+      <button id="saveBtn">存檔</button>
+      <button id="loadBtn">載入</button>
+      <button id="exportJsonBtn">匯出情境 JSON</button>
+      <input type="file" id="importJsonInput" accept="application/json" hidden />
+      <button id="importJsonBtn">匯入情境 JSON</button>
+      <button id="downloadCsvBtn">下載逐月 KPI CSV</button>
+    </div>
+  </header>
+
+  <main class="container grid">
+    <!-- Annual KPI -->
+    <section class="card">
+      <h2>一、年度 KPI（期間合計 & 達成率）</h2>
+      <div class="fields two-col">
+        <label>年度目標營收（含稅）
+          <input type="number" id="annualSalesTarget" value="300000000" />
+        </label>
+        <label>年度目標毛利（用於與「淨效益」比對）
+          <input type="number" id="annualGpTarget" value="36000000" />
+        </label>
+        <label>其他固定行銷費用（年）
+          <input type="number" id="annualMarketingCost" value="1200000" />
+        </label>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpi-label">Sales（含稅）</div>
+          <div class="kpi-value" id="kpiSales">-</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Gross Profit</div>
+          <div class="kpi-value" id="kpiGp">-</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">回饋（購買＋生日＋UGC＋推薦）</div>
+          <div class="kpi-value" id="kpiRebates">-</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">刷卡費</div>
+          <div class="kpi-value" id="kpiFees">-</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">活動成本</div>
+          <div class="kpi-value" id="kpiCampaignCost">-</div>
+        </div>
+        <div class="kpi kpi-accent">
+          <div class="kpi-label">淨效益（Net）</div>
+          <div class="kpi-value" id="kpiNet">-</div>
+        </div>
+      </div>
+
+      <div class="attainment">
+        <div>營收達成率：<span id="attSales">-</span></div>
+        <div>（淨效益 ÷ 目標毛利）達成率：<span id="attNet">-</span></div>
+      </div>
+    </section>
+
+    <!-- Core Parameters -->
+    <section class="card">
+      <h2>二、核心參數（含稅）</h2>
+      <div class="fields two-col">
+        <label>毛利率（GM%）
+          <input type="number" id="gmPct" value="12" step="0.1" />
+        </label>
+        <label>現金付款占比（%）
+          <input type="number" id="cashPct" value="60" step="0.1" />
+        </label>
+        <label>刷卡付款占比（%）
+          <input type="number" id="cardPct" value="40" step="0.1" />
+        </label>
+        <label>刷卡手續費率（%）
+          <input type="number" id="cardFeePct" value="1.6" step="0.01" />
+        </label>
+      </div>
+      <p class="hint">現金/刷卡占比自動正規化為 100%。</p>
+    </section>
+
+    <!-- Tiers -->
+    <section class="card">
+      <h2>三、會員等級與年均消費（連動回饋）</h2>
+      <div class="table-wrap">
+        <table id="tierTable">
+          <thead>
+            <tr>
+              <th>等級</th><th>會員人數</th><th>年均消費</th><th>現金回饋%</th><th>刷卡回饋%</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td contenteditable>一般</td>
+              <td contenteditable>10000</td>
+              <td contenteditable>5000</td>
+              <td contenteditable>1.0</td>
+              <td contenteditable>0.1</td>
+              <td><button class="row-del">刪</button></td>
+            </tr>
+            <tr>
+              <td contenteditable>銀卡</td>
+              <td contenteditable>2000</td>
+              <td contenteditable>15000</td>
+              <td contenteditable>1.2</td>
+              <td contenteditable>0.2</td>
+              <td><button class="row-del">刪</button></td>
+            </tr>
+            <tr>
+              <td contenteditable>金卡</td>
+              <td contenteditable>800</td>
+              <td contenteditable>40000</td>
+              <td contenteditable>1.4</td>
+              <td contenteditable>0.4</td>
+              <td><button class="row-del">刪</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row-actions">
+        <button id="addTier">新增等級</button>
+      </div>
+      <p class="hint">回饋將依「現金/刷卡占比」與各等級回饋%加權計算。</p>
+    </section>
+
+    <!-- Coins + Birthday + UGC + Referral -->
+    <section class="card">
+      <h2>四、欣幣規則＋生日/UGC/推薦</h2>
+      <div class="fields two-col">
+        <label>生日回饋（每人金額）
+          <input type="number" id="birthdayAmt" value="100" />
+        </label>
+        <label>生日參與率（%）
+          <input type="number" id="birthdayRate" value="40" step="0.1" />
+        </label>
+        <label>UGC（每月總發送額）
+          <input type="number" id="ugcMonthly" value="50000" />
+        </label>
+        <label>推薦回饋（邀請人/單）
+          <input type="number" id="referrerAmt" value="150" />
+        </label>
+        <label>推薦回饋（被邀請人/單）
+          <input type="number" id="inviteeAmt" value="150" />
+        </label>
+        <label>推薦訂單數（年）
+          <input type="number" id="refOrdersYear" value="5000" />
+        </label>
+      </div>
+    </section>
+
+    <!-- Campaign ROI -->
+    <section class="card">
+      <h2>五、活動歸因（Campaign ROI）</h2>
+      <div class="fields">
+        <label>影響支付：
+          <select id="impactPay">
+            <option value="all">全部</option>
+            <option value="cash">僅現金</option>
+            <option value="card">僅刷卡</option>
+          </select>
+        </label>
+        <label>影響等級（僅描述用）：
+          <input type="text" id="impactTiers" placeholder="一般,銀卡,金卡..." />
+        </label>
+      </div>
+      <div class="table-wrap">
+        <table id="campaignTable">
+          <thead>
+            <tr>
+              <th>活動</th><th>月份</th><th>uplift%</th><th>成本</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div class="row-actions">
+        <button id="addCampaign">新增活動</button>
+        <button id="clearCampaigns">清空</button>
+      </div>
+    </section>
+
+    <!-- Monthly KPI -->
+    <section class="card">
+      <h2>六、逐月 KPI 目標（係數模板 / 直填 / 實際填報）</h2>
+      <div class="fields">
+        <label>係數模板：
+          <select id="coefTpl">
+            <option value="balanced">均衡模板</option>
+            <option value="gaming">電競旺季</option>
+            <option value="double11">雙11檔期</option>
+          </select>
+          <button id="applyCoef">依係數分配</button>
+        </label>
+      </div>
+
+      <div class="table-wrap">
+        <table id="monthlyTable">
+          <thead>
+            <tr>
+              <th>Month</th><th>係數%</th><th>Sales 目標</th><th>GP 目標</th>
+              <th>Sales 實際</th><th>達成</th><th>GP 實際</th><th>達成</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Optimizer -->
+    <section class="card">
+      <h2>七、會員等級最佳化建議（試算）</h2>
+      <p class="hint">在維持等級占比不變下，提出兩種達標方案：A「提升 ASP」；B「增加會員數」。</p>
+      <button id="genAdvice">生成建議</button>
+      <div class="table-wrap">
+        <table id="adviceTable">
+          <thead>
+            <tr><th>方案</th><th>描述</th><th>調整後 Sales</th><th>調整後 GP</th><th>調整幅度</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container foot">
+    <small>v7 Optimized — 本頁面純前端、可離線使用（LocalStorage）。</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
